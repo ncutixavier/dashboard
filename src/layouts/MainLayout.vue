@@ -52,7 +52,11 @@
           icon="logout"
           label="Logout"
           outline
+          style="width: 80%"
         />
+        <div class="text-secondary q-my-md text-secondary">
+          ncutixavier &copy; {{ new Date().getFullYear() }}
+        </div>
       </div>
     </q-drawer>
 
@@ -61,10 +65,6 @@
         <router-view />
       </q-page>
     </q-page-container>
-
-    <q-footer class="text-info bg-dark text-center q-py-sm text-body1">
-      ncutixavier &copy; {{ new Date().getFullYear() }}</q-footer
-    >
   </q-layout>
 </template>
 

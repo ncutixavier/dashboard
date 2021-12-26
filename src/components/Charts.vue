@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-between q-gutter-md q-mt-md">
+  <div class="row justify-between q-gutter-md q-mt-xs">
     <q-card class="col-12 col-md-6 home-stats bg-primary" flat>
       <q-card-section>
         <BarChart
@@ -122,7 +122,7 @@ export default defineComponent({
 <style lang="scss">
 .home-stats {
   canvas {
-    height: 55vh !important;
+    height: 60vh !important;
   }
 }
 </style>
