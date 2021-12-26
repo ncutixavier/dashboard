@@ -28,7 +28,7 @@
         <q-item-label
           header
         >
-          Essential Links
+          ncutixavier
         </q-item-label>
 
         <EssentialLink
