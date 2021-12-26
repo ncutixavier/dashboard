@@ -1,1 +1,14 @@
 // app global css in SCSS form
+@font-face {
+  font-family: Lato;
+  src: url(./fonts/lato-regular.woff);
+}
+
+@font-face {
+  font-family: OpenSans;
+  src: url(./fonts/OpenSans-Regular.woff);
+}
+
+*, html{
+    font-family: 'OpenSans';
+}
