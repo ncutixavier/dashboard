@@ -75,7 +75,7 @@ const linksList = [
   {
     title: "Home",
     icon: "home",
-    link: "/",
+    link: "/dashboard",
   },
   {
     title: "Projects",
