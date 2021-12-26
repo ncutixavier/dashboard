@@ -57,10 +57,14 @@
     </q-drawer>
 
     <q-page-container class="bg-dark">
-      <q-page class="q-px-lg q-pt-sm">
+      <q-page class="q-px-lg">
         <router-view />
       </q-page>
     </q-page-container>
+
+    <q-footer class="text-info bg-dark text-center q-py-sm text-body1">
+      ncutixavier &copy; {{ new Date().getFullYear() }}</q-footer
+    >
   </q-layout>
 </template>
 

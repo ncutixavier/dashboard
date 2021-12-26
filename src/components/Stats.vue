@@ -3,13 +3,13 @@
     <q-card
       class="bg-primary col-12 col-md-2 q-pa-sm"
       flat
-      v-for="i in 4"
-      :key="i"
+      v-for="item in state.stats"
+      :key="item.title"
     >
       <q-card-section>
         <div class="">
-          <div class="text-secondary text-body2">Web Visitors</div>
-          <div class="text-info text-h5">55</div>
+          <div class="text-secondary text-body2">{{ item.title }}</div>
+          <div class="text-info text-h5">{{ item.value }}</div>
         </div>
         <q-avatar
           size="md"
@@ -24,10 +24,35 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 
 export default defineComponent({
-  setup() {},
+  setup() {
+    const state = reactive({
+      stats: [
+        {
+          title: "Web Visitors",
+          value: 55,
+        },
+        {
+          title: "Blog Visitors",
+          value: 10,
+        },
+        {
+          title: "Projects",
+          value: 20,
+        },
+        {
+          title: "Articles",
+          value: 3,
+        },
+      ],
+    });
+
+    return {
+      state,
+    };
+  },
 });
 </script>
 
