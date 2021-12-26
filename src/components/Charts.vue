@@ -122,7 +122,7 @@ export default defineComponent({
 <style lang="scss">
 .home-stats {
   canvas {
-    height: 60vh !important;
+    height: 55vh !important;
   }
 }
 </style>
