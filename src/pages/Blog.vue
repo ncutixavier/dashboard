@@ -4,6 +4,7 @@
       <div class="row justify-between flex-center text-white q-mb-md">
         <div class="text-h5">Blogs</div>
         <q-btn
+          size="md"
           @click="openAddForm"
           color="white"
           icon="add"

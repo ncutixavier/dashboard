@@ -61,7 +61,7 @@
     </q-drawer>
 
     <q-page-container class="bg-dark">
-      <q-page class="q-px-lg">
+      <q-page class="q-px-sm">
         <router-view />
       </q-page>
     </q-page-container>
