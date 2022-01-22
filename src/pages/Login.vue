@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-center bg-dark row q-pa-md" style="height: 100vh">
+  <div class="fullscreen flex flex-center bg-dark row q-pa-md">
     <q-card class="bg-primary col-12 col-md-4 q-pa-md">
       <q-banner
         rounded
