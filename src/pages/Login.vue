@@ -90,7 +90,7 @@ export default defineComponent({
             .then((res) => {
               if (res.data) {
                 localStorage.setItem("token", res.data.token);
-                // router.push("/");
+                router.push("/");
               }
             })
             .catch((err) => {
