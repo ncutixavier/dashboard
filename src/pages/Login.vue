@@ -8,6 +8,13 @@
       >
         <div class="text-body1">{{ state.error }}</div>
       </q-banner>
+      <q-banner
+        rounded
+        class="bg-blue-2 text-blue-8 q-my-sm text-center"
+        v-if="state.success"
+      >
+        <div class="text-body1">{{ state.success }}</div>
+      </q-banner>
       <q-card-section class="q-my-lg">
         <div class="text-center">
           <q-avatar size="100px">
@@ -76,6 +83,7 @@ export default defineComponent({
         password: "",
       },
       error: "",
+      success: "",
     });
 
     const loading = computed(() => {
@@ -90,6 +98,7 @@ export default defineComponent({
             .then((res) => {
               if (res.data) {
                 localStorage.setItem("token", res.data.token);
+                state.success = "Login Successful";
                 router.push("/");
               }
             })
