@@ -16,18 +16,22 @@
       <q-separator color="white" lang="q-mx-md" />
     </div>
 
-    <div class="row justify-between articles">
+    <div class="absolute-center" v-if="loading">
+      <q-spinner-ball color="white" size="lg"/>
+    </div>
+
+    <div class="row articles" v-if="!loading">
       <q-card
         class="q-ma-md bg-primary my-card"
         v-for="(item, i) in state.articles"
         :key="i"
       >
-        <q-img :src="item.image">
+        <q-img :src="item.image" height="120px">
           <div class="absolute-bottom text-body1">{{ item.title }}</div>
         </q-img>
 
-        <q-card-section class="text-justify text-grey">
-          {{ item.description.substring(0, 80) }}...
+        <q-card-section class="text-justify text-grey q-pa-sm">
+          <div v-html="item.content ? `${item.content.substring(0, 120)}...` : ''"></div>
         </q-card-section>
 
         <q-card-actions align="between">
@@ -131,46 +135,21 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+
 export default defineComponent({
   name: "Blog",
   setup() {
+    const store = useStore();
     const state = reactive({
       loadForm: false,
       formTitle: "",
       title: "",
       image: "",
       description: "",
-      articles: [
-        {
-          title: "Programming",
-          image:
-            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg",
-          description:
-            "Programming is the process of creating a set of instructions that tell a computer how to perform a task. Programming can be done using a variety of computer programming languages, such as JavaScript, Python, and C++.",
-        },
-        {
-          title: "Programming",
-          image:
-            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg",
-          description:
-            "Programming is the process of creating a set of instructions that tell a computer how to perform a task. Programming can be done using a variety of computer programming languages, such as JavaScript, Python, and C++.",
-        },
-        {
-          title: "Programming",
-          image:
-            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg",
-          description:
-            "Programming is the process of creating a set of instructions that tell a computer how to perform a task. Programming can be done using a variety of computer programming languages, such as JavaScript, Python, and C++.",
-        },
-        {
-          title: "Programming",
-          image:
-            "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg",
-          description:
-            "Programming is the process of creating a set of instructions that tell a computer how to perform a task. Programming can be done using a variety of computer programming languages, such as JavaScript, Python, and C++.",
-        },
-      ],
+      articles: [],
     });
 
     const openAddForm = () => {
@@ -181,10 +160,22 @@ export default defineComponent({
       state.loadForm = true;
       state.formTitle = "Edit Article";
     };
+
+    const loading = computed(() => {
+      return store.getters.loading;
+    });
+
+    onMounted(() => {
+      store.dispatch("getArticles").then((response) => {
+        state.articles = response.data.data.articles;
+      });
+    });
+
     return {
       state,
       openAddForm,
       openEditForm,
+      loading,
     };
   },
 });
