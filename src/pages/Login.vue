@@ -28,6 +28,7 @@
               bg-color="grey-5"
               :rules="[
                 (val) => (val && val.length > 0) || 'Please enter your email',
+                (val) => /.+@.+\..+/.test(val) || 'Please enter a valid email',
               ]"
             />
 
@@ -87,8 +88,10 @@ export default defineComponent({
           store
             .dispatch("login", state.user)
             .then((res) => {
-              localStorage.setItem("token", res.data.token);
-              router.push("/");
+              if (res.data) {
+                localStorage.setItem("token", res.data.token);
+                // router.push("/");
+              }
             })
             .catch((err) => {
               state.error = err.response.data.message;

@@ -104,6 +104,7 @@ export default defineComponent({
     const router = useRouter();
 
     const logout = () => {
+      localStorage.removeItem("token");
       router.push("/login");
     };
     return {
