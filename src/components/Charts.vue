@@ -86,31 +86,6 @@ export default defineComponent({
           },
         },
       },
-      nutChartData: {
-        labels: ["Article 1", "Article 2", "Article 3"],
-        datasets: [
-          {
-            label: "Visitors per month",
-            backgroundColor: generateRandomRGB(3, 0.2),
-            borderColor: "rgba(49, 204, 236, 1)",
-            borderWidth: 1,
-            hoverBackgroundColor: "rgba(49, 204, 236, 0.4)",
-            hoverBorderColor: "rgba(49, 204, 236, 1)",
-            data: [65, 59, 80],
-          },
-        ],
-        options: {
-          plugins: {
-            legend: {
-              position: "top",
-            },
-            title: {
-              display: true,
-              text: "Most popular articles",
-            },
-          },
-        },
-      },
     });
 
     return {
