@@ -3,6 +3,9 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: "https://morning-thicket-92126.herokuapp.com/api/v1",
+  headers: {
+    Authorization: `Bearer ${localStorage.token}`
+  }
 });
 
 export default boot(({ app }) => {
@@ -13,24 +16,24 @@ export default boot(({ app }) => {
 })
 
 const requestHandler = (request) => {
-  request.headers.Authorization = localStorage.token;
+  request.headers.Authorization = `Bearer ${localStorage.token}`;
   return request;
 };
 
 const responseHandler = (response) => {
-  if (response.status == 401) {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  }
+  // if (response.status == 401) {
+  //   localStorage.removeItem("token");
+  //   window.location.href = "/login";
+  // }
   return response;
 };
 
 
 const errorHandler = (error) => {
-  if (error.response.status == 401) {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  }
+  // if (error.response.status == 401) {
+  //   localStorage.removeItem("token");
+  //   window.location.href = "/login";
+  // }
   return Promise.reject(error);
 };
 

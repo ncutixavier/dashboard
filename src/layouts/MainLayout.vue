@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="bg-dark">
     <q-header class="bg-dark q-py-sm">
       <q-toolbar>
         <q-btn
@@ -60,8 +60,8 @@
       </div>
     </q-drawer>
 
-    <q-page-container class="bg-dark">
-      <q-page class="q-px-sm" style="min-height: 100vh">
+    <q-page-container>
+      <q-page class="q-px-sm q-mx-md">
         <router-view />
       </q-page>
     </q-page-container>

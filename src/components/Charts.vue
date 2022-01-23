@@ -11,8 +11,8 @@
     <q-card class="col-12 col-md-5 home-stats bg-primary" flat>
       <q-card-section>
         <DoughnutChart
-          :chartData="state.nutChartData"
-          :options="state.nutChartData.options"
+          :chartData="nutChartData"
+          :options="nutChartDataOptions"
         />
       </q-card-section>
     </q-card>
@@ -30,6 +30,7 @@ export default defineComponent({
     BarChart,
     DoughnutChart,
   },
+  props: ["nutChartData", "nutChartDataOptions"],
   setup() {
     const generateRandomRGB = (n, d) => {
       let rgb = [];

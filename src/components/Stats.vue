@@ -3,7 +3,7 @@
     <q-card
       class="bg-primary col-12 col-md-2 q-pa-sm"
       flat
-      v-for="item in state.stats"
+      v-for="item in statsdata"
       :key="item.title"
     >
       <q-card-section>
@@ -27,6 +27,13 @@
 import { defineComponent, reactive } from "vue";
 
 export default defineComponent({
+  name: "Stats",
+  props: {
+    statsdata: {
+      type: Array,
+      default: () => [],
+    },
+  },
   setup() {
     const state = reactive({
       stats: [

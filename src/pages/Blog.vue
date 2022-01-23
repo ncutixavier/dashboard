@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <div class="q-mx-md">
+    <div class="">
       <div class="row justify-between flex-center text-white q-mb-md">
         <div class="text-h5">Blogs</div>
         <q-btn
@@ -20,18 +20,18 @@
       <q-spinner-ball color="white" size="lg"/>
     </div>
 
-    <div class="row articles" v-if="!loading">
+    <div class="row articles q-gutter-x-lg" v-if="!loading">
       <q-card
-        class="q-ma-md bg-primary my-card"
+        class="q-my-md bg-primary my-card"
         v-for="(item, i) in state.articles"
         :key="i"
       >
-        <q-img :src="item.image" height="120px">
+        <q-img :src="item.image" height="140px">
           <div class="absolute-bottom text-body1">{{ item.title }}</div>
         </q-img>
 
         <q-card-section class="text-justify text-grey q-pa-sm">
-          <div v-html="item.content ? `${item.content.substring(0, 120)}...` : ''"></div>
+          <div v-html="item.content ? `${item.content.substring(0, 90)}...` : ''"></div>
         </q-card-section>
 
         <q-card-actions align="between">
