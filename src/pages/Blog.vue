@@ -63,12 +63,7 @@
           </div>
 
           <q-card-actions align="right">
-            <q-btn
-              flat
-              label="Cancel"
-              color="negative"
-              v-close-popup
-            />
+            <q-btn flat label="Cancel" color="negative" v-close-popup />
             <q-btn
               flat
               label="Confirm delete"
@@ -167,6 +162,8 @@
                       options: ['left', 'center', 'right', 'justify'],
                     },
                   ],
+                  ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+                  ['token', 'hr', 'link', 'custom_btn'],
                 ]"
               />
 
@@ -177,6 +174,7 @@
                   flat
                   color="info"
                   label="Save"
+                  :loading="state.loading"
                   v-if="!state.saveForm"
                 />
                 <q-btn
@@ -233,6 +231,10 @@ export default defineComponent({
       state.loadForm = true;
       state.formTitle = "Edit Article";
       state.saveForm = false;
+      state.article = item;
+      state.title = item.title;
+      state.image = item.image;
+      state.content = item.content;
     };
 
     const loading = computed(() => {
@@ -285,17 +287,42 @@ export default defineComponent({
 
     const handleUpdate = () => {
       const data = {
-        title: state.title,
-        image: state.image,
-        content: state.content,
+        title: state.title || state.article.title,
+        image: state.image || state.article.image,
+        content: state.content || state.article.content,
       };
       console.log("UPDATE::", data);
+      state.loading = true;
+      store
+        .dispatch("updateArticle", {
+          id: state.article._id,
+          article: data
+        })
+        .then((res) => {
+          state.loading = false;
+          state.loadForm = false;
+          state.title = "";
+          state.image = "";
+          state.content = "";
+          store.dispatch("getArticles");
+          Notify.create({
+            progress: true,
+            message: "Article updated successfully",
+            color: "info",
+            textColor: "primary",
+            icon: "check",
+            position: "top-right",
+            timeout: 1000,
+          });
+        }).catch((err) => {
+          state.loading = false;
+          console.log(err.response);
+        })
     };
 
     const handleDelete = () => {
       state.loading = true;
-      store.dispatch("deleteArticle", state.article._id)
-      .then((res) => {
+      store.dispatch("deleteArticle", state.article._id).then((res) => {
         state.confirmDelete = false;
         state.loading = false;
         Notify.create({
@@ -316,7 +343,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      store.dispatch("getArticles")
+      store.dispatch("getArticles");
     });
 
     return {

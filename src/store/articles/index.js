@@ -20,9 +20,12 @@ export default {
     setErrors(state, errors) {
       state.errors = errors;
     },
-    setDeleteArticle(state, article) { 
-      state.articles = article
-    }
+    setDeleteArticle(state, article) {
+      state.articles = article;
+    },
+    setUpdateArticle(state, article) {
+      state.article = article;
+    },
   },
   actions: {
     getArticles({ commit }) {
@@ -61,6 +64,22 @@ export default {
           .delete(`/blogs/${id}`)
           .then((response) => {
             commit("setDeleteArticle", response.data);
+            resolve(response);
+          })
+          .catch((error) => {
+            commit("setErrors", error.response);
+            reject(error);
+          });
+      });
+    },
+    updateArticle({ commit }, payload) {
+      console.log("ITEMS::", payload);
+      return new Promise((resolve, reject) => {
+        api
+          .patch(`/blogs/${payload.id}`, payload.article)
+          .then((response) => {
+            console.log(response);
+            commit("setUpdateArticle", response.data);
             resolve(response);
           })
           .catch((error) => {
