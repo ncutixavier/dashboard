@@ -3,6 +3,8 @@ import { api } from "boot/axios";
 export default {
   state: {
     articles: [],
+    article: [],
+    errors: [],
     loading: false,
   },
   mutations: {
@@ -12,6 +14,15 @@ export default {
     setLoading(state, loading) {
       state.loading = loading;
     },
+    setNewArticle(state, article) {
+      state.article = article;
+    },
+    setErrors(state, errors) {
+      state.errors = errors;
+    },
+    setDeleteArticle(state, article) { 
+      state.articles = article
+    }
   },
   actions: {
     getArticles({ commit }) {
@@ -26,7 +37,34 @@ export default {
           })
           .catch((error) => {
             commit("setLoading", false);
-            console.log("ARTICLES::", response.data);
+            reject(error);
+          });
+      });
+    },
+    publishNewArticle({ commit }, article) {
+      return new Promise((resolve, reject) => {
+        api
+          .post("/blogs", article)
+          .then((response) => {
+            commit("setNewArticle", response.data);
+            resolve(response);
+          })
+          .catch((error) => {
+            commit("setErrors", error.response);
+            reject(error);
+          });
+      });
+    },
+    deleteArticle({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        api
+          .delete(`/blogs/${id}`)
+          .then((response) => {
+            commit("setDeleteArticle", response.data);
+            resolve(response);
+          })
+          .catch((error) => {
+            commit("setErrors", error.response);
             reject(error);
           });
       });

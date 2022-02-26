@@ -17,13 +17,13 @@
     </div>
 
     <div class="absolute-center" v-if="loading">
-      <q-spinner-ball color="white" size="lg"/>
+      <q-spinner-ball color="white" size="lg" />
     </div>
 
     <div class="row articles q-gutter-x-lg" v-if="!loading">
       <q-card
         class="q-my-md bg-primary my-card"
-        v-for="(item, i) in state.articles"
+        v-for="(item, i) in articles"
         :key="i"
       >
         <q-img :src="item.image" height="140px">
@@ -31,7 +31,9 @@
         </q-img>
 
         <q-card-section class="text-justify text-grey q-pa-sm">
-          <div v-html="item.content ? `${item.content.substring(0, 90)}...` : ''"></div>
+          <div
+            v-html="item.content ? `${item.content.substring(0, 90)}...` : ''"
+          ></div>
         </q-card-section>
 
         <q-card-actions align="between">
@@ -41,15 +43,46 @@
             icon="edit"
             size="sm"
             outline
-            @click="openEditForm"
+            @click="openEditForm(item)"
           />
-          <q-btn round color="negative" icon="delete" size="sm" outline />
+          <q-btn
+            round
+            color="negative"
+            icon="delete"
+            size="sm"
+            outline
+            @click="deleteArticle(item)"
+          />
         </q-card-actions>
       </q-card>
+      <q-dialog v-model="state.confirmDelete" persistent position="top">
+        <q-card style="min-width: 350px" class="bg-primary text-white">
+          <div class="q-px-md q-my-md text-body1">
+            Confirm to delete article:
+            <strong>{{ state.article.title }}</strong>
+          </div>
+
+          <q-card-actions align="right">
+            <q-btn
+              flat
+              label="Cancel"
+              color="negative"
+              v-close-popup
+            />
+            <q-btn
+              flat
+              label="Confirm delete"
+              color="info"
+              :loading="state.loading"
+              @click="handleDelete"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
       <q-dialog
         v-model="state.loadForm"
-        position="top"
         persistent
+        position="top"
         transition-show="flip-down"
         transition-hide="flip-up"
       >
@@ -72,7 +105,25 @@
           <q-separator color="grey-7" />
 
           <q-card-section>
-            <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+            <q-banner
+              rounded
+              class="bg-pink-2 text-pink-6 q-my-sm text-center"
+              v-if="state.error"
+            >
+              <div class="text-body1">{{ state.error }}</div>
+            </q-banner>
+            <q-banner
+              rounded
+              class="bg-blue-2 text-blue-8 q-my-sm text-center"
+              v-if="state.success"
+            >
+              <div class="text-body1">{{ state.success }}</div>
+            </q-banner>
+            <q-form
+              :submit="state.saveForm ? handleCreate : handleUpdate"
+              ref="form"
+              class="q-gutter-md"
+            >
               <q-input
                 filled
                 v-model="state.title"
@@ -84,19 +135,16 @@
                 ]"
               />
 
-              <q-input
+              <q-file
                 filled
                 v-model="state.image"
                 label="Image"
                 lazy-rules
                 bg-color="grey-5"
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Please enter image url',
-                ]"
               />
 
               <q-editor
-                v-model="state.description"
+                v-model="state.content"
                 content-class="bg-dark"
                 toolbar-text-color="white"
                 toolbar-toggle-color="info"
@@ -124,7 +172,21 @@
 
               <div class="row justify-end">
                 <q-btn v-close-popup flat color="negative" label="Cancel" />
-                <q-btn type="submit" flat color="info" label="Save" />
+                <q-btn
+                  type="submit"
+                  flat
+                  color="info"
+                  label="Save"
+                  v-if="!state.saveForm"
+                />
+                <q-btn
+                  type="submit"
+                  flat
+                  color="info"
+                  label="Publish"
+                  v-if="state.saveForm"
+                  :loading="state.loading"
+                />
               </div>
             </q-form>
           </q-card-section>
@@ -135,40 +197,126 @@
 </template>
 
 <script>
-import { defineComponent, reactive, onMounted, computed } from "vue";
+import { defineComponent, reactive, onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
+import { useQuasar, Notify } from "quasar";
 
 export default defineComponent({
   name: "Blog",
   setup() {
+    const $q = useQuasar();
     const store = useStore();
     const state = reactive({
       loadForm: false,
       formTitle: "",
       title: "",
       image: "",
-      description: "",
+      content: "",
       articles: [],
+      saveForm: false,
+      success: "",
+      error: "",
+      article: null,
+      confirmDelete: false,
+      loading: false,
     });
 
     const openAddForm = () => {
       state.loadForm = true;
       state.formTitle = "Publish New Article";
+      state.saveForm = true;
     };
-    const openEditForm = () => {
+
+    const openEditForm = (item) => {
+      console.log(item);
       state.loadForm = true;
       state.formTitle = "Edit Article";
+      state.saveForm = false;
     };
 
     const loading = computed(() => {
       return store.getters.loading;
     });
 
-    onMounted(() => {
-      store.dispatch("getArticles").then((response) => {
-        state.articles = response.data.data.articles;
+    const handleCreate = () => {
+      const formData = new FormData();
+      formData.append("title", state.title);
+      formData.append("image", state.image);
+      formData.append("content", state.content);
+      state.loading = true;
+      store
+        .dispatch("publishNewArticle", formData)
+        .then((res) => {
+          state.loading = false;
+          Notify.create({
+            progress: true,
+            message: "Article published successfully",
+            color: "info",
+            textColor: "primary",
+            icon: "check",
+            position: "top-right",
+            timeout: 1000,
+          });
+          state.loadForm = false;
+          state.title = "";
+          state.image = "";
+          state.content = "";
+          store.dispatch("getArticles");
+        })
+        .catch((err) => {
+          state.loading = false;
+          Notify.create({
+            progress: true,
+            message: err?.response?.data?.message,
+            color: "negative",
+            textColor: "white",
+            icon: "warning",
+            position: "top",
+          });
+        });
+    };
+
+    const deleteArticle = (item) => {
+      console.log("DELETE::", item);
+      state.confirmDelete = true;
+      state.article = item;
+    };
+
+    const handleUpdate = () => {
+      const data = {
+        title: state.title,
+        image: state.image,
+        content: state.content,
+      };
+      console.log("UPDATE::", data);
+    };
+
+    const handleDelete = () => {
+      state.loading = true;
+      store.dispatch("deleteArticle", state.article._id)
+      .then((res) => {
+        state.confirmDelete = false;
+        state.loading = false;
+        Notify.create({
+          progress: true,
+          message: res?.data?.message,
+          color: "info",
+          textColor: "primary",
+          icon: "check",
+          position: "top-right",
+          timeout: 1000,
+        });
+        store.dispatch("getArticles");
       });
+    };
+
+    const articles = computed(() => {
+      return store.state.articles?.articles?.data?.articles;
+    });
+
+    onMounted(() => {
+      store.dispatch("getArticles")
     });
 
     return {
@@ -176,6 +324,11 @@ export default defineComponent({
       openAddForm,
       openEditForm,
       loading,
+      handleCreate,
+      handleUpdate,
+      deleteArticle,
+      handleDelete,
+      articles,
     };
   },
 });
