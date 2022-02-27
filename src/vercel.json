@@ -3,5 +3,6 @@
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "Origin Control": "Off",
+  "s-maxage": "0"
 }
