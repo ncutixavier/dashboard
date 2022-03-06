@@ -78,8 +78,8 @@
         v-model="state.loadForm"
         persistent
         position="top"
-        transition-show="flip-down"
-        transition-hide="flip-up"
+        transition-show="slide-down"
+        transition-hide="fade"
       >
         <q-card
           class="bg-primary text-white"
@@ -117,6 +117,7 @@
             <q-form
               :submit="state.saveForm ? handleCreate : handleUpdate"
               ref="form"
+              @reset="onReset"
               class="q-gutter-md"
             >
               <q-input
@@ -168,7 +169,13 @@
               />
 
               <div class="row justify-end">
-                <q-btn v-close-popup flat color="negative" label="Cancel" />
+                <q-btn
+                  v-close-popup
+                  type="reset"
+                  flat
+                  color="negative"
+                  label="Cancel"
+                />
                 <q-btn
                   type="submit"
                   flat
@@ -227,7 +234,6 @@ export default defineComponent({
     };
 
     const openEditForm = (item) => {
-      console.log(item);
       state.loadForm = true;
       state.formTitle = "Edit Article";
       state.saveForm = false;
@@ -296,7 +302,7 @@ export default defineComponent({
       store
         .dispatch("updateArticle", {
           id: state.article._id,
-          article: data
+          article: data,
         })
         .then((res) => {
           state.loading = false;
@@ -314,10 +320,11 @@ export default defineComponent({
             position: "top-right",
             timeout: 1000,
           });
-        }).catch((err) => {
+        })
+        .catch((err) => {
           state.loading = false;
           console.log(err.response);
-        })
+        });
     };
 
     const handleDelete = () => {
@@ -356,6 +363,11 @@ export default defineComponent({
       deleteArticle,
       handleDelete,
       articles,
+      onReset() {
+        state.title = "";
+        state.image = "";
+        state.content = "";
+      },
     };
   },
 });
