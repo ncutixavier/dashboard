@@ -2,7 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: "https://zany-fox-lab-coat.cyclic.app/api/v1",
+  baseURL: "https://portifolio-backend.onrender.com/api/v1",
   headers: {
     Authorization: `Bearer ${localStorage.token}`
   }
